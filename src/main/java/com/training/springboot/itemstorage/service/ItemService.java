@@ -12,6 +12,7 @@ import static com.training.springboot.itemstorage.utils.constant.ItemStorageCons
 
 import java.math.BigInteger;
 import java.util.List;
+import lombok.RequiredArgsConstructor;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
@@ -19,22 +20,10 @@ import org.springframework.util.StringUtils;
 import org.springframework.web.client.RestTemplate;
 
 @Service
+@RequiredArgsConstructor
 public class ItemService implements IItemService {
 
-	@Autowired
-	private ItemRepository itemRepository;
-
-	@Autowired
-	private ItemStorageProperties itemStorageProperties;
-
-	/**
-	 * @JavaDoc RestTemplate is a synchronous Http Client which is supported by Pivotal development team take into
-	 * consideration this client is deprecated and shall not be supported for LTS use instead the newly Http Client
-	 * WebClient which is capable of synchronous & asynchronous invocations check some code samples at:
-	 * https://spring.io/guides/gs/consuming-rest/
-	 */
-	@Autowired
-	private RestTemplate restTemplate;
+	private final ItemRepository itemRepository;
 
 	@Override
 	public Page<Item> list(int size, int page) {
@@ -84,23 +73,11 @@ public class ItemService implements IItemService {
 		return itemRepository.save(item);
 	}
 
-	@Override
-	public void notify(NotificationRequest request) {
-		restTemplate.postForEntity(itemStorageProperties.getSendNotificationEmailUri(),
-				request, Object.class);
-	}
 
 	@Override
 	public void restock(Long id, Integer quantity) {
 		Item item = get(id);
 		item.setStock(item.getStock().add(BigInteger.valueOf(quantity)));
-		if (item.getStock().intValue() == 0 && itemStorageProperties.isSendNotificationEmail()) {
-			notify(NotificationRequest.builder()
-					.email(itemStorageProperties.getSendNotificationEmailRecipient())
-					.subject(itemStorageProperties.getSendNotificationEmailSubject())
-					.message(String.format(itemStorageProperties.getSendNotificationEmailMessage(), id))
-					.build());
-		}
 		save(item);
 	}
 

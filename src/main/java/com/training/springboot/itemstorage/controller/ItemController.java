@@ -4,6 +4,7 @@ import com.training.springboot.itemstorage.entity.model.Item;
 import com.training.springboot.itemstorage.entity.request.CreateItemRequestDto;
 import com.training.springboot.itemstorage.entity.request.DispatchItemRequestDto;
 import com.training.springboot.itemstorage.entity.request.RestockItemRequestDto;
+import com.training.springboot.itemstorage.entity.request.UpdateItemRequestDto;
 import com.training.springboot.itemstorage.entity.response.CreateItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.GetItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.UpdateItemResponseDto;
@@ -12,6 +13,7 @@ import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
 import java.util.List;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
+import lombok.RequiredArgsConstructor;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.cloud.context.config.annotation.RefreshScope;
@@ -28,18 +30,17 @@ import org.springframework.web.bind.annotation.RestController;
 
 @RefreshScope
 @RestController
+@RequiredArgsConstructor
 @RequestMapping("/items")
 public class ItemController implements IItemController {
 
-	@Autowired
-	private ItemService itemService;
+	private final ItemService itemService;
 
 	/**
 	 * @JavaDoc ModelMapper is a mapping tool easily configurable to accommodate most application defined entities check
 	 * some configuration example at: http://modelmapper.org/user-manual/
 	 */
-	@Autowired
-	private ModelMapper mapper;
+	private final  ModelMapper mapper;
 
 	@Override
 	@PostMapping
@@ -55,12 +56,12 @@ public class ItemController implements IItemController {
 			return new ResponseEntity<>(mapper.map(itemService.get(id), GetItemResponseDto.class), HttpStatus.OK);
 	}
 
-	@Override
 	@PatchMapping("/{id}")
-	@ServiceOperation("updateItem")
-	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id, @RequestBody Item item) {
-		item.setItemUid(id);
-			return new ResponseEntity<>(mapper.map(itemService.update(item), UpdateItemResponseDto.class), HttpStatus.OK);
+	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id,
+			@RequestBody UpdateItemRequestDto request) {
+		request.setItemUid(id);
+		return ResponseEntity.status(HttpStatus.OK)
+				.body(mapper.map(itemService.update(mapper.map(request, Item.class)), UpdateItemResponseDto.class));
 	}
 
 	@Override

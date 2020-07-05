@@ -4,6 +4,7 @@ import com.training.springboot.itemstorage.entity.model.Item;
 import com.training.springboot.itemstorage.entity.request.CreateItemRequestDto;
 import com.training.springboot.itemstorage.entity.request.DispatchItemRequestDto;
 import com.training.springboot.itemstorage.entity.request.RestockItemRequestDto;
+import com.training.springboot.itemstorage.entity.request.UpdateItemRequestDto;
 import com.training.springboot.itemstorage.entity.response.CreateItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.GetItemResponseDto;
 import com.training.springboot.itemstorage.entity.response.UpdateItemResponseDto;
@@ -31,7 +32,7 @@ public interface IItemController {
 
 	@PatchMapping("/{id}")
 	@ServiceOperation("updateItem")
-	ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id, @RequestBody Item item);
+	ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id, @RequestBody UpdateItemRequestDto item);
 
 	@DeleteMapping("/{id}")
 	@ServiceOperation("deleteItem")
