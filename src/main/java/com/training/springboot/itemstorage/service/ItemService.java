@@ -1,7 +1,6 @@
 package com.training.springboot.itemstorage.service;
 
 import com.training.springboot.itemstorage.entity.model.Item;
-import com.training.springboot.itemstorage.entity.request.NotificationRequest;
 import com.training.springboot.itemstorage.repository.ItemRepository;
 import java.util.List;
 import lombok.RequiredArgsConstructor;

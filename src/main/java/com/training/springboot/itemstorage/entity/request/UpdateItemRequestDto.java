@@ -14,7 +14,7 @@ import lombok.NoArgsConstructor;
 public class UpdateItemRequestDto {
 
 	@JsonIgnore
-	private Long id;
+	private Long itemId;
 	private String name;
 	private String state;
 	private String description;
