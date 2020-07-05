@@ -21,8 +21,6 @@ public class ItemService implements IItemService {
 
 	private final ItemRepository itemRepository;
 
-	private final ItemStorageProperties itemStorageProperties;
-
 
 	@Override
 	public Page<Item> list(int size, int page) {
