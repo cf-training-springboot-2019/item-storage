@@ -50,11 +50,6 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public void notify(NotificationRequest request) {
-		//TODO Print request (format email:message)
-	}
-
-	@Override
 	public void restock(Long id, Integer quantity) {
 		//TODO get item's current stock and increase it  by given quantity
 	}

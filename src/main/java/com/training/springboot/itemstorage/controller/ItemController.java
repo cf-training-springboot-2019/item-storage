@@ -27,7 +27,7 @@ import org.springframework.web.bind.annotation.RestController;
 @RestController
 @RequestMapping("/items")
 @RequiredArgsConstructor
-public class ItemController {
+public class ItemController implements IItemController {
 
 	private final ItemService itemService;
 
@@ -37,6 +37,7 @@ public class ItemController {
 	 */
 	private final ModelMapper mapper;
 
+	@Override
 	@PostMapping
 	public ResponseEntity<CreateItemResponseDto> createItem(@RequestBody @Valid CreateItemRequestDto request) {
 		Item item = mapper.map(request, Item.class);
@@ -45,6 +46,7 @@ public class ItemController {
 		return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
 	}
 
+	@Override
 	@GetMapping("/{id}")
 	public ResponseEntity<GetItemResponseDto> getItem(@PathVariable("id") Long id) {
 		//TODO GET ITEM (use service)
@@ -52,6 +54,7 @@ public class ItemController {
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 
+	@Override
 	@PatchMapping("/{id}")
 	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id,
 			@RequestBody UpdateItemRequestDto request) {
@@ -61,12 +64,14 @@ public class ItemController {
 		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
 	}
 
+	@Override
 	@DeleteMapping("/{id}")
 	public ResponseEntity<HttpStatus> deleteItem(@PathVariable("id") Long id) {
 		// TODO Delete item (use service)
 		return ResponseEntity.noContent().build();
 	}
 
+	@Override
 	@GetMapping
 	public ResponseEntity<List<GetItemResponseDto>> listItems() {
 		List<GetItemResponseDto> responseDtoList;
@@ -75,6 +80,7 @@ public class ItemController {
 		return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
 	}
 
+	@Override
 	@PostMapping("/{id}/dispatch")
 	public ResponseEntity<HttpStatus> dispatchItem(@PathVariable("id") Long id,
 			@RequestBody DispatchItemRequestDto request) {
@@ -82,6 +88,7 @@ public class ItemController {
 		return ResponseEntity.ok().build();
 	}
 
+	@Override
 	@PostMapping("/{id}/restock")
 	public ResponseEntity<HttpStatus> restockItem(@PathVariable("id") Long id,
 			@RequestBody RestockItemRequestDto request) {
