@@ -1,31 +1,28 @@
 package com.training.springboot.itemstorage.service;
 
-import com.training.springboot.itemstorage.error.EntityNotFoundException;
 import com.training.springboot.itemstorage.repository.ItemRepository;
-import org.junit.After;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.junit.jupiter.api.AfterEach;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
 
 	private static Long ITEM_UID = 1l;
-	@Autowired
+	@InjectMocks
 	private ItemService itemService;
-	@MockBean
+	@Mock
 	private ItemRepository itemRepository;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 	}
 
-	@After
+	@AfterEach
 	public void tearDown() {
 	}
 
@@ -53,12 +50,13 @@ public class ItemServiceTest {
 		// Assert - Verify that all criterias are met
 	}
 
-	@Test(expected = EntityNotFoundException.class)
-	public void getError() {
+	@Test
+	public void getEntityNotFoundThrown() {
 		// TODO: Complete having in mind the AAA approach
 		// Arrange - Prepare variables and mock responses
 		// Act - Behaviour to test
 		// Assert - Verify that all criterias are met
+		// - EntityNotFoundException is thrown
 	}
 
 }

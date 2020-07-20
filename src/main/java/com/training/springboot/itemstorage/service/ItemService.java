@@ -1,19 +1,16 @@
 package com.training.springboot.itemstorage.service;
 
 import com.training.springboot.itemstorage.entity.model.Item;
-import com.training.springboot.itemstorage.entity.request.NotificationRequest;
 import com.training.springboot.itemstorage.enums.EnumEntity;
 import com.training.springboot.itemstorage.enums.EnumItemState;
 import com.training.springboot.itemstorage.error.EntityNotFoundException;
 import com.training.springboot.itemstorage.repository.ItemRepository;
-import com.training.springboot.itemstorage.utils.properties.ItemStorageProperties;
 import java.math.BigInteger;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 @RequiredArgsConstructor
 @Service
@@ -21,15 +18,6 @@ public class ItemService implements IItemService {
 
 	private final ItemRepository itemRepository;
 
-	private final ItemStorageProperties itemStorageProperties;
-
-	/**
-	 * @JavaDoc RestTemplate is a synchronous Http Client which is supported by Pivotal development team take into
-	 * consideration this client is deprecated and shall not be supported for LTS use instead the newly Http Client
-	 * WebClient which is capable of synchronous & asynchronous invocations check some code samples at:
-	 * https://spring.io/guides/gs/consuming-rest/
-	 */
-	private final RestTemplate restTemplate;
 
 	@Override
 	public Page<Item> list(int size, int page) {
@@ -80,22 +68,9 @@ public class ItemService implements IItemService {
 	}
 
 	@Override
-	public void notify(NotificationRequest request) {
-		restTemplate.postForEntity(itemStorageProperties.getSendNotificationEmailUri(),
-				request, Object.class);
-	}
-
-	@Override
 	public void restock(Long id, Integer quantity) {
 		Item item = get(id);
 		item.setStock(item.getStock().add(BigInteger.valueOf(quantity)));
-		if (item.getStock().intValue() == 0 && itemStorageProperties.isSendNotificationEmail()) {
-			notify(NotificationRequest.builder()
-					.email(itemStorageProperties.getSendNotificationEmailRecipient())
-					.subject(itemStorageProperties.getSendNotificationEmailSubject())
-					.message(String.format(itemStorageProperties.getSendNotificationEmailMessage(), id))
-					.build());
-		}
 		save(item);
 	}
 

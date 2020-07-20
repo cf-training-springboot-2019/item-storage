@@ -1,35 +1,22 @@
 package com.training.springboot.itemstorage.controller;
 
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.when;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
-
-import com.training.springboot.itemstorage.entity.model.Item;
-import com.training.springboot.itemstorage.enums.EnumItemState;
 import com.training.springboot.itemstorage.service.ItemService;
 import com.training.springboot.itemstorage.utils.interceptor.LoggingHandler;
 import com.training.springboot.itemstorage.utils.interceptor.MdcInitHandler;
-import java.io.FileReader;
-import java.math.BigDecimal;
-import java.math.BigInteger;
-import org.junit.Before;
-import org.junit.Test;
-import org.junit.runner.RunWith;
+import org.junit.jupiter.api.BeforeEach;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.core.io.Resource;
-import org.springframework.http.MediaType;
-import org.springframework.test.context.junit4.SpringRunner;
+import org.springframework.test.context.junit.jupiter.SpringExtension;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
-import org.springframework.util.FileCopyUtils;
 
 @SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(SpringExtension.class)
 public class ItemControllerTest {
 
 	private static Long ITEM_UID = 1l;
@@ -49,7 +36,7 @@ public class ItemControllerTest {
 	private ItemService itemService;
 	private MockMvc mockMvc;
 
-	@Before
+	@BeforeEach
 	public void setUp() {
 
 		mockMvc = MockMvcBuilders.standaloneSetup(itemController)
