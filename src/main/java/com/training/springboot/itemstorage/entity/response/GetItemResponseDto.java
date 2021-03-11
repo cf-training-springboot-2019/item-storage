@@ -17,5 +17,6 @@ public class GetItemResponseDto extends CreateItemResponseDto {
 	private String market;
 	private BigInteger stock;
 	private BigDecimal priceTag;
+	private String coin;
 
 }
