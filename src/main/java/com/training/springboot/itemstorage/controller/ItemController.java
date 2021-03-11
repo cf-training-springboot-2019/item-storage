@@ -65,7 +65,7 @@ public class ItemController {
 		if (isToApplyExchangeRate) {
 			Optional<Currency> currency = currencyConverter.getCurrency(item.getMarket());
 			currency.ifPresent(c -> {
-				responseDto.setSymbol(c.getCoin());
+				responseDto.setCoin(c.getCoin());
 				responseDto.setPriceTag(responseDto.getPriceTag().multiply(c.getRate()));
 			});
 		}
