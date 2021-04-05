@@ -10,7 +10,7 @@
   </parent>
   <groupId>com.training.springboot</groupId>
   <artifactId>item-storage</artifactId>
-  <version>0.0.1</version>
+  <version>1.0.0</version>
   <name>item-storage</name>
   <description>Demo project for Spring Boot</description>
 
@@ -37,10 +37,7 @@
       <artifactId>spring-boot-starter-web</artifactId>
     </dependency>
     <!-- TODO: Add eureka dependency to enable service registration -->
-    <dependency>
-      <groupId>org.springframework.cloud</groupId>
-      <artifactId>spring-cloud-starter-config</artifactId>
-    </dependency>
+    <!-- TODO: Add cloud config dependency to enable externalized  configuration -->
     <dependency>
       <groupId>com.h2database</groupId>
       <artifactId>h2</artifactId>

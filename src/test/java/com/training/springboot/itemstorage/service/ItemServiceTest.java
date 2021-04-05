@@ -1,30 +1,29 @@
 package com.training.springboot.itemstorage.service;
 
+import static org.hamcrest.MatcherAssert.assertThat;
+import static org.hamcrest.Matchers.is;
+import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.mockito.Mockito.when;
 
 import com.training.springboot.itemstorage.entity.model.Item;
+import com.training.springboot.itemstorage.error.EntityNotFoundException;
 import com.training.springboot.itemstorage.repository.ItemRepository;
 import java.math.BigDecimal;
 import java.math.BigInteger;
 import java.util.Optional;
-import javax.persistence.EntityNotFoundException;
-import org.junit.Test;
-import org.junit.runner.RunWith;
-import org.springframework.beans.factory.annotation.Autowired;
-import org.springframework.boot.test.context.SpringBootTest;
-import org.springframework.boot.test.mock.mockito.MockBean;
-import org.springframework.test.context.junit4.SpringRunner;
-import static org.hamcrest.MatcherAssert.assertThat;
-import static org.hamcrest.Matchers.is;
+import org.junit.jupiter.api.Test;
+import org.junit.jupiter.api.extension.ExtendWith;
+import org.mockito.InjectMocks;
+import org.mockito.Mock;
+import org.mockito.junit.jupiter.MockitoExtension;
 
-@SpringBootTest
-@RunWith(SpringRunner.class)
+@ExtendWith(MockitoExtension.class)
 public class ItemServiceTest {
 
-	@MockBean
+	@Mock
 	private ItemRepository itemRepository;
 
-	@Autowired
+	@InjectMocks
 	private ItemService itemService;
 
 	private static final long ID = 1l;
@@ -41,11 +40,11 @@ public class ItemServiceTest {
 		assertThat(item.getItemUid(),is(1l));
 	}
 
-	@Test(expected = EntityNotFoundException.class)
+	@Test
 	public void errorGet() {
 		when(itemRepository.findById(ID)).thenReturn(Optional.empty());
-		itemService.get(ID);
-
+		assertThrows(EntityNotFoundException.class,
+				() -> 	itemService.get(ID));
 	}
 
 }

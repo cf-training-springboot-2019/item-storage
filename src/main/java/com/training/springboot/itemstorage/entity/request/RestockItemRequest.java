@@ -11,7 +11,7 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class DispatchItemRequestDto {
+public class RestockItemRequest {
 
 	@NotNull
 	@PositiveOrZero
