@@ -1,5 +1,7 @@
 package com.training.springboot.itemstorage.controller;
 
+import com.training.springboot.itemstorage.configuration.CurrencyConverter;
+import com.training.springboot.itemstorage.configuration.CurrencyConverter.Currency;
 import com.training.springboot.itemstorage.entity.model.Item;
 import com.training.springboot.itemstorage.entity.request.CreateItemRequest;
 import com.training.springboot.itemstorage.entity.request.DispatchItemRequest;
@@ -11,6 +13,7 @@ import com.training.springboot.itemstorage.entity.response.UpdateItemResponse;
 import com.training.springboot.itemstorage.service.ItemService;
 import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
@@ -25,6 +28,7 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
 @RefreshScope
@@ -34,6 +38,8 @@ import org.springframework.web.bind.annotation.RestController;
 public class ItemController implements StandardItemController {
 
 	private final ItemService itemService;
+	private final CurrencyConverter currencyConverter;
+
 	/**
 	 * @JavaDoc ModelMapper is a mapping tool easily configurable to accommodate most application defined entities check
 	 * some configuration example at: http://modelmapper.org/user-manual/
@@ -51,7 +57,17 @@ public class ItemController implements StandardItemController {
 	@Override
 	@GetMapping("/{id}")
 	@ServiceOperation("getItem")
-	public ResponseEntity<GetItemResponse> getItem(@PathVariable("id") Long id) {
+	public ResponseEntity<GetItemResponse> getItem(@PathVariable("id") Long id,
+			@RequestParam(value = "applyRate", defaultValue = "false") boolean isToApplyExchangeRate) {
+		Item item = itemService.get(id);
+		GetItemResponse response = mapper.map(item, GetItemResponse.class);
+		if (isToApplyExchangeRate) {
+			Optional<Currency> currency = currencyConverter.getCurrency(item.getMarket());
+			currency.ifPresent(c -> {
+				response.setCoin(c.getCoin());
+				response.setPriceTag(response.getPriceTag().multiply(c.getRate()));
+			});
+		}
 		return ResponseEntity.ok(mapper.map(itemService.get(id), GetItemResponse.class));
 	}
 

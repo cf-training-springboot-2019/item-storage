@@ -1,4 +1,4 @@
-package com.training.springboot.itemstorage.utils.filter;
+package com.training.springboot.itemstorage.utils.interceptor;
 
 import static com.training.springboot.itemstorage.utils.constant.ItemStorageConstant.LOGGING_HANDLER_PROCESS_TIME_MSG;
 

@@ -1,4 +1,4 @@
-package com.training.springboot.itemstorage.utils.filter;
+package com.training.springboot.itemstorage.utils.interceptor;
 
 import static com.training.springboot.itemstorage.utils.constant.ItemStorageConstant.TRACE_ID_HEADER;
 

@@ -18,6 +18,7 @@ import org.springframework.web.bind.annotation.PatchMapping;
 import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
+import org.springframework.web.bind.annotation.RequestParam;
 
 public interface StandardItemController {
 
@@ -27,7 +28,8 @@ public interface StandardItemController {
 
 	@GetMapping("/{id}")
 	@ServiceOperation("getItem")
-	ResponseEntity<GetItemResponse> getItem(@PathVariable("id") Long id);
+	ResponseEntity<GetItemResponse> getItem(@PathVariable("id") Long id,
+			@RequestParam(value = "applyRate", defaultValue = "false") boolean isToApplyExchangeRate);
 
 	@PatchMapping("/{id}")
 	@ServiceOperation("updateItem")
