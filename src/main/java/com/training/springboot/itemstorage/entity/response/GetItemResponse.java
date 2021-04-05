@@ -9,7 +9,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class GetItemResponseDto extends CreateItemResponseDto {
+public class GetItemResponse extends CreateItemResponse {
 
 	private String name;
 	private String state;

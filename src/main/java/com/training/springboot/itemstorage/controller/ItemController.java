@@ -3,18 +3,18 @@ package com.training.springboot.itemstorage.controller;
 import com.training.springboot.itemstorage.configuration.CurrencyConverter;
 import com.training.springboot.itemstorage.configuration.CurrencyConverter.Currency;
 import com.training.springboot.itemstorage.entity.model.Item;
-import com.training.springboot.itemstorage.entity.request.CreateItemRequestDto;
-import com.training.springboot.itemstorage.entity.request.DispatchItemRequestDto;
-import com.training.springboot.itemstorage.entity.request.RestockItemRequestDto;
-import com.training.springboot.itemstorage.entity.request.UpdateItemRequestDto;
-import com.training.springboot.itemstorage.entity.response.CreateItemResponseDto;
-import com.training.springboot.itemstorage.entity.response.GetItemResponseDto;
-import com.training.springboot.itemstorage.entity.response.UpdateItemResponseDto;
+import com.training.springboot.itemstorage.entity.request.CreateItemRequest;
+import com.training.springboot.itemstorage.entity.request.DispatchItemRequest;
+import com.training.springboot.itemstorage.entity.request.RestockItemRequest;
+import com.training.springboot.itemstorage.entity.request.UpdateItemRequest;
+import com.training.springboot.itemstorage.entity.response.CreateItemResponse;
+import com.training.springboot.itemstorage.entity.response.GetItemResponse;
+import com.training.springboot.itemstorage.entity.response.UpdateItemResponse;
 import com.training.springboot.itemstorage.service.ItemService;
 import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
+import java.util.stream.Collectors;
 import javax.validation.Valid;
 import lombok.RequiredArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
@@ -31,38 +31,36 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.bind.annotation.RestController;
 
-
 @Slf4j
 @RestController
 @RequiredArgsConstructor
 @RequestMapping("/items")
-public class ItemController {
+public class ItemController implements StandardItemController {
 
 	private final ItemService itemService;
-	private final CurrencyConverter currencyConverter;
-
-
 	/**
 	 * @JavaDoc ModelMapper is a mapping tool easily configurable to accommodate most application defined entities check
 	 * some configuration example at: http://modelmapper.org/user-manual/
 	 */
 	private final ModelMapper mapper;
 
-	@ServiceOperation("createItem")
+	private CurrencyConverter currencyConverter;
+
+	@Override
 	@PostMapping
-	public ResponseEntity<CreateItemResponseDto> createItem(@RequestBody @Valid CreateItemRequestDto request) {
-		Item item = mapper.map(request, Item.class);
-		Item persistedItem = itemService.save(item);
-		CreateItemResponseDto responseDto = mapper.map(persistedItem, CreateItemResponseDto.class);
-		return ResponseEntity.status(HttpStatus.CREATED).body(responseDto);
+	@ServiceOperation("createItem")
+	public ResponseEntity<CreateItemResponse> createItem(@RequestBody @Valid CreateItemRequest request) {
+		return new ResponseEntity<>(mapper.map(itemService.save(mapper.map(request, Item.class)), CreateItemResponse.class),
+				HttpStatus.CREATED);
 	}
 
-	@ServiceOperation("getItem")
+	@Override
 	@GetMapping("/{id}")
-	public ResponseEntity<GetItemResponseDto> getItem(@PathVariable("id") Long id,
+	@ServiceOperation("getItem")
+	public ResponseEntity<GetItemResponse> getItem(@PathVariable("id") Long id,
 			@RequestParam(value = "applyRate", defaultValue = "false") boolean isToApplyExchangeRate) {
 		Item item = itemService.get(id);
-		GetItemResponseDto responseDto = mapper.map(item, GetItemResponseDto.class);
+		GetItemResponse responseDto = mapper.map(item, GetItemResponse.class);
 		if (isToApplyExchangeRate) {
 			Optional<Currency> currency = currencyConverter.getCurrency(item.getMarket());
 			currency.ifPresent(c -> {
@@ -70,49 +68,51 @@ public class ItemController {
 				responseDto.setPriceTag(responseDto.getPriceTag().multiply(c.getRate()));
 			});
 		}
-		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+		return ResponseEntity.ok(mapper.map(itemService.get(id), GetItemResponse.class));
 	}
 
-	@ServiceOperation("updateItem")
 	@PatchMapping("/{id}")
-	public ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id,
-			@RequestBody UpdateItemRequestDto request) {
-		Item item = mapper.map(request, Item.class);
-		Item persistedItem = itemService.save(item);
-		UpdateItemResponseDto responseDto = mapper.map(persistedItem, UpdateItemResponseDto.class);
-		return ResponseEntity.status(HttpStatus.OK).body(responseDto);
+	public ResponseEntity<UpdateItemResponse> updateItem(@PathVariable("id") Long id,
+			@RequestBody UpdateItemRequest request) {
+		request.setItemUid(id);
+		return ResponseEntity.ok(mapper.map(itemService.update(mapper.map(request, Item.class)), UpdateItemResponse.class));
 	}
 
-	@ServiceOperation("deleteItem")
+	@Override
 	@DeleteMapping("/{id}")
+	@ServiceOperation("deleteItem")
 	public ResponseEntity<HttpStatus> deleteItem(@PathVariable("id") Long id) {
 		itemService.delete(id);
 		return ResponseEntity.noContent().build();
 	}
 
-	@ServiceOperation("listItems")
+	@Override
 	@GetMapping
-	public ResponseEntity<List<GetItemResponseDto>> listItems() {
-		List<GetItemResponseDto> responseDtoList = new ArrayList<>();
+	@ServiceOperation("listItems")
+	public ResponseEntity<List<GetItemResponse>> listItems() {
 		List<Item> itemList = itemService.list();
-		itemList.forEach(item -> responseDtoList.add(mapper.map(item, GetItemResponseDto.class)));
-		return ResponseEntity.status(HttpStatus.OK).body(responseDtoList);
+		List<GetItemResponse> response = itemList.stream()
+				.map(i -> mapper.map(i, GetItemResponse.class))
+				.collect(Collectors.toList());
+		return ResponseEntity.ok(response);
 	}
 
-	@ServiceOperation("dispatchItem")
+	@Override
 	@PostMapping("/{id}/dispatch")
+	@ServiceOperation("dispatchItem")
 	public ResponseEntity<HttpStatus> dispatchItem(@PathVariable("id") Long id,
-			@RequestBody DispatchItemRequestDto request) {
+			@RequestBody DispatchItemRequest request) {
 		itemService.dispatch(id, request.getQuantity());
-		return ResponseEntity.ok().build();
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
-	@ServiceOperation("restockItem")
+	@Override
 	@PostMapping("/{id}/restock")
+	@ServiceOperation("restockItem")
 	public ResponseEntity<HttpStatus> restockItem(@PathVariable("id") Long id,
-			@RequestBody RestockItemRequestDto request) {
+			@RequestBody RestockItemRequest request) {
 		itemService.restock(id, request.getQuantity());
-		return ResponseEntity.ok().build();
+		return new ResponseEntity<>(HttpStatus.OK);
 	}
 
 }

@@ -10,7 +10,7 @@ import lombok.NoArgsConstructor;
 @Data
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateItemResponseDto extends CreateItemResponseDto {
+public class UpdateItemResponse extends CreateItemResponse {
 
 	private String name;
 	private String state;

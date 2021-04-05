@@ -15,11 +15,12 @@ import org.springframework.context.annotation.Configuration;
 @ConfigurationProperties(prefix = "currency")
 public class CurrencyConverter {
 
-	public Map<String,Currency> converter;
+	public Map<String, Currency> converter;
 
 	public Optional<Currency> getCurrency(String market) {
-		if(market==null)
+		if (market == null) {
 			return Optional.empty();
+		}
 		return Optional.ofNullable(converter.get(market));
 	}
 
@@ -32,7 +33,6 @@ public class CurrencyConverter {
 		private BigDecimal rate;
 
 	}
-
 
 
 }
