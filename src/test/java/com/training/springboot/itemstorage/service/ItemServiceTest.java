@@ -18,7 +18,7 @@ import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 
 @ExtendWith(MockitoExtension.class)
-public class ItemServiceTest {
+class ItemServiceTest {
 
 	@Mock
 	private ItemRepository itemRepository;
@@ -29,7 +29,7 @@ public class ItemServiceTest {
 	private static final long ID = 1l;
 
 	@Test
-	public void save() {
+	void save() {
 		Item item = Item.builder().
 				name("banana").priceTag(BigDecimal.ONE).stock(BigInteger.ONE).build();
 
@@ -41,7 +41,7 @@ public class ItemServiceTest {
 	}
 
 	@Test
-	public void errorGet() {
+	void errorGet() {
 		when(itemRepository.findById(ID)).thenReturn(Optional.empty());
 		assertThrows(EntityNotFoundException.class,
 				() -> 	itemService.get(ID));

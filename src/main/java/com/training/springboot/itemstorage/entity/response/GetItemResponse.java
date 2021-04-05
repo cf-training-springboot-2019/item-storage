@@ -17,5 +17,6 @@ public class GetItemResponse extends CreateItemResponse {
 	private String market;
 	private BigInteger stock;
 	private BigDecimal priceTag;
+	private String coin;
 
 }
