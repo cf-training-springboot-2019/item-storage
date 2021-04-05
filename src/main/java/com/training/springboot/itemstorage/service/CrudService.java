@@ -3,7 +3,7 @@ package com.training.springboot.itemstorage.service;
 import java.util.List;
 import org.springframework.data.domain.Page;
 
-public interface ICrudService<T extends Object> {
+public interface CrudService<T extends Object> {
 
 	Page<T> list(int size, int page);
 

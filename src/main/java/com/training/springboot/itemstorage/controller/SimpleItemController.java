@@ -1,13 +1,13 @@
 package com.training.springboot.itemstorage.controller;
 
 import com.training.springboot.itemstorage.entity.model.Item;
-import com.training.springboot.itemstorage.entity.request.CreateItemRequestDto;
-import com.training.springboot.itemstorage.entity.request.DispatchItemRequestDto;
-import com.training.springboot.itemstorage.entity.request.RestockItemRequestDto;
-import com.training.springboot.itemstorage.entity.request.UpdateItemRequestDto;
-import com.training.springboot.itemstorage.entity.response.CreateItemResponseDto;
-import com.training.springboot.itemstorage.entity.response.GetItemResponseDto;
-import com.training.springboot.itemstorage.entity.response.UpdateItemResponseDto;
+import com.training.springboot.itemstorage.entity.request.CreateItemRequest;
+import com.training.springboot.itemstorage.entity.request.DispatchItemRequest;
+import com.training.springboot.itemstorage.entity.request.RestockItemRequest;
+import com.training.springboot.itemstorage.entity.request.UpdateItemRequest;
+import com.training.springboot.itemstorage.entity.response.CreateItemResponse;
+import com.training.springboot.itemstorage.entity.response.GetItemResponse;
+import com.training.springboot.itemstorage.entity.response.UpdateItemResponse;
 import com.training.springboot.itemstorage.utils.annotation.ServiceOperation;
 import java.util.List;
 import javax.validation.Valid;
@@ -20,19 +20,19 @@ import org.springframework.web.bind.annotation.PathVariable;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 
-public interface IItemController {
+public interface SimpleItemController {
 
 	@PostMapping
 	@ServiceOperation("createItem")
-	ResponseEntity<CreateItemResponseDto> createItem(@RequestBody @Valid CreateItemRequestDto request);
+	ResponseEntity<Item> createItem(@RequestBody @Valid Item request);
 
 	@GetMapping("/{id}")
 	@ServiceOperation("getItem")
-	ResponseEntity<GetItemResponseDto> getItem(@PathVariable("id") Long id);
+	ResponseEntity<Item> getItem(@PathVariable("id") Long id);
 
 	@PatchMapping("/{id}")
 	@ServiceOperation("updateItem")
-	ResponseEntity<UpdateItemResponseDto> updateItem(@PathVariable("id") Long id, @RequestBody UpdateItemRequestDto item);
+	ResponseEntity<Item> updateItem(@PathVariable("id") Long id, @RequestBody Item item);
 
 	@DeleteMapping("/{id}")
 	@ServiceOperation("deleteItem")
@@ -40,15 +40,15 @@ public interface IItemController {
 
 	@GetMapping
 	@ServiceOperation("listItems")
-	ResponseEntity<List<GetItemResponseDto>> listItems();
+	ResponseEntity<List<Item>> listItems();
 
 	@PostMapping("/{id}/dispatch")
 	@ServiceOperation("dispatchItem")
 	ResponseEntity<HttpStatus> dispatchItem(@PathVariable("id") Long id,
-			@RequestBody DispatchItemRequestDto request);
+			@RequestBody Item request);
 
 	@PostMapping("/{id}/restock")
 	@ServiceOperation("restockItem")
 	ResponseEntity<HttpStatus> restockItem(@PathVariable("id") Long id,
-			@RequestBody RestockItemRequestDto request);
+			@RequestBody Item request);
 }

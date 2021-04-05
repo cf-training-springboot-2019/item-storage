@@ -1,6 +1,6 @@
 package com.training.springboot.itemstorage.entity.request;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+import javax.validation.constraints.NotNull;
 import javax.validation.constraints.PositiveOrZero;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
@@ -11,17 +11,9 @@ import lombok.NoArgsConstructor;
 @Builder
 @NoArgsConstructor
 @AllArgsConstructor
-public class UpdateItemRequestDto {
+public class DispatchItemRequest {
 
-	@JsonIgnore
-	private Long itemUid;
-	private String name;
-	private String state;
-	private String description;
-	private String market;
+	@NotNull
 	@PositiveOrZero
-	private Integer stock;
-	@PositiveOrZero
-	private Double priceTag;
-
+	private Integer quantity;
 }

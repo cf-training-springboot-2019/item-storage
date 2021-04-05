@@ -1,27 +1,21 @@
 package com.training.springboot.itemstorage.service;
 
 import com.training.springboot.itemstorage.entity.model.Item;
-import com.training.springboot.itemstorage.entity.request.NotificationRequest;
 import com.training.springboot.itemstorage.enums.EnumEntity;
 import com.training.springboot.itemstorage.enums.EnumItemState;
 import com.training.springboot.itemstorage.error.EntityNotFoundException;
 import com.training.springboot.itemstorage.repository.ItemRepository;
-import com.training.springboot.itemstorage.utils.properties.ItemStorageProperties;
-
-import static com.training.springboot.itemstorage.utils.constant.ItemStorageConstant.ENTITY_NOT_FOUND_MSG;
 
 import java.math.BigInteger;
 import java.util.List;
 import lombok.RequiredArgsConstructor;
-import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.stereotype.Service;
 import org.springframework.util.StringUtils;
-import org.springframework.web.client.RestTemplate;
 
 @Service
 @RequiredArgsConstructor
-public class ItemService implements IItemService {
+public class ItemService implements StandardItemService {
 
 	private final ItemRepository itemRepository;
 
