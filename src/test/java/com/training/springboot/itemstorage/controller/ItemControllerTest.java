@@ -13,6 +13,7 @@ import com.training.springboot.itemstorage.service.ItemService;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.math.BigInteger;
+import lombok.SneakyThrows;
 import org.junit.jupiter.api.Test;
 import org.modelmapper.ModelMapper;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -41,7 +42,8 @@ class ItemControllerTest {
 	private MockMvc mockMvc;
 
 	@Test
-	public void createItem() throws Exception {
+	@SneakyThrows
+	void createItem() {
 
 		CreateItemRequest request = CreateItemRequest.builder()
 				.name("Item1")
